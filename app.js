@@ -1,12 +1,14 @@
 const path = require("path")
 const express = require("express");
-// const mongoose = require("mongoose")
+const mongoose = require("mongoose")
 const dotenv = require("dotenv");
 const morgan = require("morgan");
 const exphbs = require("express-handlebars");
 const passport = require("passport")
 const session = require("express-session")
+const MongoStore = require("connect-mongo")(session)
 const connectDB = require("./config/db");
+// const { Passport } = require("passport");
 
 
 
@@ -17,7 +19,7 @@ const connectDB = require("./config/db");
 dotenv.config({path: "./config/config.env"})
 
 //Passport
-require("./config/passport")
+require("./config/passport")(passport)
 
 
 
@@ -43,6 +45,7 @@ app.use(session({
     secret: 'keyboard cat',
     resave: false,
     saveUninitialized: true,
+    store: new MongoStore({mongooseConnection: mongoose.connection})
   }))
 
 //Passport Middleware
